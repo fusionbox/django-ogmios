@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup
 
-version = '0.9.0-dev'
+version = '0.9.0'
 
 
 def read_file(fname):
