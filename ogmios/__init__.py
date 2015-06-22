@@ -53,7 +53,7 @@ class EmailSender(object):
         self.using = using
 
     def get_from(self):
-        self.data.get('from', settings.DEFAULT_FROM_EMAIL)
+        return self.data.get('from', settings.DEFAULT_FROM_EMAIL)
 
     def render_string(self, string):
         return Template(string).render(Context(self.context))
