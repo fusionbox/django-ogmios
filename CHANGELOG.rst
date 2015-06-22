@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.9.1 (unreleased)
+0.9.1 (2015-06-22)
 ------------------
 
-- Nothing changed yet.
+- Fix 'From' field always being default
 
 
 0.9.0 (2015-06-18)
