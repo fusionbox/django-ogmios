@@ -34,6 +34,7 @@ setup(name='django-ogmios',
           'PyYAML',
           'Markdown',
           'html2text',
+          'six',
       ],
       packages=['ogmios'],
       )
