@@ -1,9 +1,21 @@
 from tempfile import NamedTemporaryFile
 
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from ogmios import send_email
+
+CACHED_TEMPLATE_LOADER_SETTINGS = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'loaders': (('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]),)
+        },
+    }
+]
 
 
 class SendEmailTest(TestCase):
@@ -54,6 +66,16 @@ class SendEmailTest(TestCase):
         assert content_types == {'text/plain', 'text/html'}
 
     def test_html(self):
+        send_email('html.html', {})
+
+        assert len(mail.outbox) == 1
+        message = mail.outbox[0].message()
+        assert message.is_multipart()
+        content_types = {m.get_content_type() for m in message.get_payload()}
+        assert content_types == {'text/plain', 'text/html'}
+
+    @override_settings(TEMPLATES=CACHED_TEMPLATE_LOADER_SETTINGS)
+    def test_cached_loader(self):
         send_email('html.html', {})
 
         assert len(mail.outbox) == 1
