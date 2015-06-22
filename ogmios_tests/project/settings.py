@@ -9,11 +9,6 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
     },
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [],
-        'APP_DIRS': True,
-    }
 ]
 
 INSTALLED_APPS = (
