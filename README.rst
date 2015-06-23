@@ -1,6 +1,9 @@
 =============
 Django-Ogmios
 =============
+.. image:: https://travis-ci.org/fusionbox/django-ogmios.svg?branch=master
+    :target: https://travis-ci.org/fusionbox/django-ogmios
+    :alt Build Status
 
 Just sends emails. Simple, easy, multiformat.
 
@@ -25,9 +28,9 @@ Quickstart
       - ['awesomereport.odt', 'mydocuments/crappy_report.odt', 'application/vnd.oasis.opendocument.text-template']
     ---
     {% load special_filter %}
-    
+
     This is a list of special items:
-    
+
     {% for item in item_list %}
        * {{ item|special }}
     {% endfor %}
