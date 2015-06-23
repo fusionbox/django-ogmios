@@ -1,6 +1,7 @@
 import os
 
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 version = '0.9.2.dev0'
 
@@ -8,6 +9,19 @@ version = '0.9.2.dev0'
 def read_file(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as fp:
         return fp.read()
+
+
+class PyTest(TestCommand):
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        os.chdir('ogmios_tests')
+        pytest.main(self.test_args)
 
 
 setup(name='django-ogmios',
@@ -36,5 +50,7 @@ setup(name='django-ogmios',
           'html2text',
           'six',
       ],
+      tests_require=['pytest', 'pytest-django', 'pytest-pythonpath'],
+      cmdclass={'test': PyTest},
       packages=['ogmios'],
       )
