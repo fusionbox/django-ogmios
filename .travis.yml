@@ -1,12 +1,11 @@
 language: python
 
-python:
-  - "2.7"
-  - "3.4"
-  - "nightly"
-
 install:
   - pip install --upgrade pip
   - pip install tox
 
-script: tox
+env:
+  - TOX_ENV=py34
+  - TOX_ENV=py27
+
+script: tox -e $TOX_ENV
