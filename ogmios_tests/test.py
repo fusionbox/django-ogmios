@@ -30,7 +30,8 @@ class SendEmailTest(TestCase):
         assert to in mail.outbox[0].to
 
     def test_send_attachement(self):
-        content = 'Some content'
+        # Encode to bytes for Python 3 compatibility
+        content = 'Some content'.encode('utf-8')
 
         with NamedTemporaryFile() as fp:
             fp.write(content)
@@ -46,7 +47,8 @@ class SendEmailTest(TestCase):
         content = 'Some content'
 
         with NamedTemporaryFile() as fp:
-            fp.write(content)
+            # Encode to bytes for Python 3 compatibility.
+            fp.write(content.encode('utf-8'))
             fp.flush()
 
             send_email('renamed_attachment.md', {'file': fp.name})
