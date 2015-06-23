@@ -18,6 +18,10 @@ CACHED_TEMPLATE_LOADER_SETTINGS = [
 ]
 
 
+def get_message_text(email):
+    return email.message().get_payload()[0].get_payload()
+
+
 class SendEmailTest(TestCase):
 
     def test_send_to(self):
@@ -75,6 +79,25 @@ class SendEmailTest(TestCase):
         assert message.is_multipart()
         content_types = {m.get_content_type() for m in message.get_payload()}
         assert content_types == {'text/plain', 'text/html'}
+
+    def test_context_application(self):
+        context = {
+            'to_name': 'Leroy Jenkins',
+            'to_address': 'leroooooooooooooooooooooooooy.mmmmm.jenkiiiiiiiiiiins@gmail.com',
+            'from_name': 'Onyxia',
+            'from_address': 'onyxia@wow.blizzard.net',
+            'subject': 'Raid',
+            'survival_percent': "33.3 (repeating of course) percent",
+        }
+
+        send_email('context.html', context)
+
+        sent_mail = mail.outbox[0]
+
+        assert sent_mail.to[0] == '{} <{}>'.format(context['to_name'], context['to_address'])
+        assert sent_mail.from_email == '{} <{}>'.format(context['from_name'], context['from_address'])
+        assert sent_mail.subject == context['subject']
+        assert get_message_text(sent_mail).strip() == "Chance of survival: {}".format(context['survival_percent'])
 
     @override_settings(TEMPLATES=CACHED_TEMPLATE_LOADER_SETTINGS)
     def test_cached_loader(self):
