@@ -65,10 +65,22 @@ class EmailSender(object):
 
         for engine in engine_list:
             for loader in engine.engine.template_loaders:
-                try:
-                    return loader.load_template_source(self.filename)[0]
-                except TemplateDoesNotExist:
-                    pass
+                # Check for the cached template loader
+                if hasattr(loader, 'get_template_sources'):
+                    # The cached template loader has a fake `load_template_source`
+                    # but not a `get_template_sources`
+                    try:
+                        return loader.load_template_source(self.filename)[0]
+                    except TemplateDoesNotExist:
+                        pass
+                else:
+                    # This might be the cached template loader, in which case we need to
+                    # load the source from the loaders it's wrapping.
+                    for i in loader.loaders:
+                        try:
+                            return i.load_template_source(self.filename)[0]
+                        except TemplateDoesNotExist:
+                            pass
         raise TemplateDoesNotExist(self.filename)
 
     @cached_property
