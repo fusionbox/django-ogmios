@@ -50,7 +50,7 @@ setup(name='django-ogmios',
           'html2text',
           'six',
       ],
-      tests_require=['pytest', 'pytest-django', 'pytest-pythonpath'],
+      tests_require=['pytest-django', 'pytest-pythonpath', 'pytest'],
       cmdclass={'test': PyTest},
       packages=['ogmios'],
       )
