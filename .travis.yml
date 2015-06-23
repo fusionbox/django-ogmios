@@ -1,11 +1,13 @@
 language: python
 
+python:
+  - "2.7"
+  - "3.4"
+  - "nightly"
+
 install:
   - pip install --upgrade pip
-  - pip install tox
-
-env:
-  - TOX_ENV=py34
-  - TOX_ENV=py27
-
-script: tox -e $TOX_ENV
+  - pip install pytest-django pytest-pythonpath pytest
+  - python setup.py install
+script:
+ - py.test ogmios_tests/test.py
