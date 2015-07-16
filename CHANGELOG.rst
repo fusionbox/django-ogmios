@@ -1,10 +1,13 @@
 Changelog
 =========
 
-0.9.2 (unreleased)
+0.9.2 (2015-07-16)
 ------------------
 
-- Nothing changed yet.
+- Fix ``setup.py`` dependencies. [Alex Bliskovsky]
+- Fix tests. [Alex Bliskovsky]
+- Fix compatibility with django's cached loader. [Alex Bliskovsky]
+- Fix context processing. [Alex Bliskovsky]
 
 
 0.9.1 (2015-06-22)
