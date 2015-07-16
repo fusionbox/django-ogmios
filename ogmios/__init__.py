@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import collections
 import os
 
@@ -9,8 +11,9 @@ import six
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template import Template, Context, TemplateDoesNotExist
-from django.template import engines
 from django.utils.functional import cached_property
+
+from .loaders import get_template_source
 
 VALID_KEYS = set(['to', 'cc', 'bcc', 'subject', 'attachments',
                   'from', 'headers', 'content-type'])
@@ -60,28 +63,7 @@ class EmailSender(object):
         return Template(string).render(Context(self.context))
 
     def get_template_source(self):
-        # Copied from django/templates/loader.py#_engine_list in Django 1.8
-        engine_list = engines.all() if self.using is None else [engines[self.using]]
-
-        for engine in engine_list:
-            for loader in engine.engine.template_loaders:
-                # Check for the cached template loader
-                if hasattr(loader, 'get_template_sources'):
-                    # The cached template loader has a fake `load_template_source`
-                    # but not a `get_template_sources`
-                    try:
-                        return loader.load_template_source(self.filename)[0]
-                    except TemplateDoesNotExist:
-                        pass
-                else:
-                    # This might be the cached template loader, in which case we need to
-                    # load the source from the loaders it's wrapping.
-                    for i in loader.loaders:
-                        try:
-                            return i.load_template_source(self.filename)[0]
-                        except TemplateDoesNotExist:
-                            pass
-        raise TemplateDoesNotExist(self.filename)
+        return loaders.get_template_source(self)
 
     @cached_property
     def content(self):
