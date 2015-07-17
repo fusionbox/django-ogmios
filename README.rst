@@ -7,6 +7,8 @@ Django-Ogmios
 
 Just sends emails. Simple, easy, multiformat.
 
+For those wondering, [Ogmios](https://en.wikipedia.org/wiki/Ogmios) is just the Gallic god of eloquence.
+
 Quickstart
 ==========
 
