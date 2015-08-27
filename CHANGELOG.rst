@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.9.3 (unreleased)
+0.9.3 (2015-08-27)
 ------------------
 
 - Add Django 1.7 compatibility. [Alex Bliskovsky]
