@@ -12,6 +12,8 @@ For those wondering, [Ogmios](https://en.wikipedia.org/wiki/Ogmios) is just the 
 Quickstart
 ==========
 
+Install with ``pip``: ``pip install django-ogmios``.
+
 ``yourproject/templates/mail/template.html``::
 
     from: admin@example.org
