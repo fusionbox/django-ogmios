@@ -33,7 +33,7 @@ class SendEmailTest(TestCase):
         assert len(mail.outbox[0].to) == 1
         assert to in mail.outbox[0].to
 
-    def test_send_attachement(self):
+    def test_send_attachment(self):
         # Encode to bytes for Python 3 compatibility
         content = 'Some content'.encode('utf-8')
 
@@ -47,7 +47,7 @@ class SendEmailTest(TestCase):
         assert len(mail.outbox[0].attachments) == 1
         assert mail.outbox[0].attachments[0][1] == content
 
-    def test_rename_attachement(self):
+    def test_rename_attachment(self):
         content = 'Some content'
 
         with NamedTemporaryFile() as fp:
