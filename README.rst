@@ -25,7 +25,7 @@ Install with ``pip``: ``pip install django-ogmios``.
     headers:
       Reply-To: Jaqueline <jaqueline@example.net>
       Organization: Example.org, Inc.
-    attachements:
+    attachments:
       - /absolute/path/file.odt
       - relative/path/file.ods
       - {{ file.path }}

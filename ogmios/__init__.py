@@ -102,7 +102,7 @@ class EmailSender(object):
         return self.render_string(self.data['subject'])
 
     def get_attachments(self):
-        error = EmailTemplateError("Attachements should be a list of either "
+        error = EmailTemplateError("Attachments should be a list of either "
                                    "strings or a tuple "
                                    "(name, filename, mimetype)")
 
