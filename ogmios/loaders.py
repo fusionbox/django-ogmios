@@ -54,7 +54,10 @@ def get_template_source_from_engine_module(engines, instance):
     """
     Check all configured engines for a specific template.
     """
-    engine_list = engines.all() if instance.using is None else [engines[instance.using]]
+    if instance.template_loader is None:
+        engine_list = engines.all()
+    else:
+        engine_list = [engines[instance.template_loader]]
 
     for engine in engine_list:
         try:

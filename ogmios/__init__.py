@@ -50,10 +50,10 @@ class EmailTemplateError(Exception):
 
 class EmailSender(object):
 
-    def __init__(self, filename, context, using=None):
+    def __init__(self, filename, context, template_loader=None):
         self.filename = filename
         self.context = context
-        self.using = using
+        self.template_loader = template_loader
 
     def get_from(self):
         from_addr = self.data.get('from', settings.DEFAULT_FROM_EMAIL)
