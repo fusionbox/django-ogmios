@@ -12,7 +12,7 @@ For those wondering, `Ogmios <https://en.wikipedia.org/wiki/Ogmios>`_ is just th
 Quickstart
 ==========
 
-Install with ``pip``: ``pip install django-ogmios``.
+Install from PyPI with ``pip``: ``pip install django-ogmios``.
 
 ``yourproject/templates/mail/template.html``::
 
@@ -25,11 +25,6 @@ Install with ``pip``: ``pip install django-ogmios``.
     headers:
       Reply-To: Jaqueline <jaqueline@example.net>
       Organization: Example.org, Inc.
-    attachments:
-      - /absolute/path/file.odt
-      - relative/path/file.ods
-      - {{ file.path }}
-      - ['awesomereport.odt', 'mydocuments/crappy_report.odt', 'application/vnd.oasis.opendocument.text-template']
     ---
     {% load special_filter %}
 
@@ -44,10 +39,17 @@ Install with ``pip``: ``pip install django-ogmios``.
 
     import ogmios
 
-    ogmios.send_email('mail/template.html', {'item_list': ['Hello']})
+    ogmios.send_email('mail/template.html',
+                      {'item_list': ['Hello']},
+                      attachments=[{
+                           'path': '/path/to/file/',
+                           'name': 'file.txt',
+                           'type': 'text/plain',
+                       }])
 
 
 This will render the content as markdown, and send the email with an HTML part and a Plaintext part.
+For attachments, it is possible to just specify the path, or the path, filename and mimetype.
 
 Tips
 ====

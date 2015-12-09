@@ -44,16 +44,21 @@ class TemplateYAMLLoader(yaml.SafeLoader):
         return self.fetch_plain()
 
 
-class EmailTemplateError(Exception):
+class OgmiosError(Exception):
+    pass
+
+
+class EmailTemplateError(OgmiosError):
     pass
 
 
 class EmailSender(object):
 
-    def __init__(self, filename, context, template_loader=None):
+    def __init__(self, filename, context, template_loader=None, attachments=None):
         self.filename = filename
         self.context = context
         self.template_loader = template_loader
+        self.attachments = attachments or []
 
     def get_from(self):
         from_addr = self.data.get('from', settings.DEFAULT_FROM_EMAIL)
@@ -101,20 +106,16 @@ class EmailSender(object):
     def get_subject(self):
         return self.render_string(self.data['subject'])
 
-    def get_attachments(self):
-        error = EmailTemplateError("Attachments should be a list of either "
-                                   "strings or a tuple "
-                                   "(name, filename, mimetype)")
-
-        for attachment in self.data.get('attachments', []):
-            if isinstance(attachment, six.string_types):
-                yield self.render_string(attachment)
-            elif isinstance(attachment, collections.Iterable):
-                if len(attachment) != 3:
-                    raise error
-                yield tuple(self.render_string(s) for s in attachment)
+    def validate_attachments(self):
+        for attachment in self.attachments:
+            if set(attachment.keys()) == set(['path', 'name', 'type']):
+                continue
+            elif set(attachment.keys()) == set(['path']):
+                continue
             else:
-                raise error
+                raise OgmiosError("Attachments should be a list of dictionaries "
+                                  "with either a 'path' key, or 'path', 'name', and 'type' "
+                                  "keys.")
 
     def get_headers(self):
         for key, value in self.data['headers'].items():
@@ -143,6 +144,8 @@ class EmailSender(object):
         if len(to) == 0:
             raise EmailTemplateError("You gotta give some recipients.")
 
+        self.validate_attachments()
+
         kwargs = dict(
             subject=self.get_subject(),
             to=to,
@@ -162,11 +165,11 @@ class EmailSender(object):
             email = EmailMultiAlternatives(**kwargs)
             email.attach_alternative(self.html, 'text/html')
 
-        for attachment in self.get_attachments():
-            if isinstance(attachment, six.string_types):
-                email.attach_file(attachment)
-            elif isinstance(attachment, tuple) and len(attachment) == 3:
-                name, fname, mime = attachment
+        for attachment in self.attachments:
+            if len(attachment.keys()) == 1:
+                email.attach_file(attachment['path'])
+            elif len(attachment.keys()) == 3:
+                name, fname, mime = attachment['name'], attachment['path'], attachment['type']
                 full_fname = os.path.join(fname)
                 with open(full_fname, 'r') as file_:
                     data = file_.read()
@@ -175,5 +178,5 @@ class EmailSender(object):
         email.send()
 
 
-def send_email(template, context, sender_class=EmailSender):
-    return sender_class(template, context).send()
+def send_email(template, context, sender_class=EmailSender, attachments=None):
+    return sender_class(template, context, attachments=attachments).send()
