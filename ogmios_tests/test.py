@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 from django.core import mail
 from django.test import TestCase, override_settings
 
-from ogmios import send_email
+from ogmios import send_email, OgmiosError
 
 CACHED_TEMPLATE_LOADER_SETTINGS = [
     {
@@ -41,11 +41,34 @@ class SendEmailTest(TestCase):
             fp.write(content)
             fp.flush()
 
-            send_email('attachment.md', {'file': fp.name})
+            send_email('attachment.md',
+                       context={},
+                       attachments=[fp.name]
+            )
 
         assert len(mail.outbox) == 1
         assert len(mail.outbox[0].attachments) == 1
         assert mail.outbox[0].attachments[0][1] == content
+
+    def test_send_renamed_attachment_without_mimetype(self):
+        content = 'Some content'
+
+        with NamedTemporaryFile() as fp:
+            # Encode to bytes for Python 3 compatibility.
+            fp.write(content.encode('utf-8'))
+            fp.flush()
+
+            send_email('attachment.md',
+                       context={},
+                       attachments=[{
+                           'path': fp.name,
+                           'name': 'file_test.txt',
+                       }])
+
+        assert len(mail.outbox) == 1
+        assert len(mail.outbox[0].attachments) == 1
+        assert mail.outbox[0].attachments[0][1] == content
+        assert mail.outbox[0].attachments[0][0] == 'file_test.txt'
 
     def test_rename_attachment(self):
         content = 'Some content'
@@ -55,12 +78,31 @@ class SendEmailTest(TestCase):
             fp.write(content.encode('utf-8'))
             fp.flush()
 
-            send_email('renamed_attachment.md', {'file': fp.name})
+            send_email('attachment.md',
+                       context={},
+                       attachments=[{
+                           'path': fp.name,
+                           'name': 'file.txt',
+                           'type': 'text/plain',
+                       }])
 
         assert len(mail.outbox) == 1
         assert len(mail.outbox[0].attachments) == 1
         assert mail.outbox[0].attachments[0][1] == content
         assert mail.outbox[0].attachments[0][0] == 'file.txt'
+
+    def test_attachment_validation(self):
+        content = 'Some content'
+
+        with NamedTemporaryFile() as fp:
+            fp.write(content.encode('utf-8'))
+            fp.flush()
+            with self.assertRaises(OgmiosError):
+                send_email('attachment.md',
+                           context={},
+                           attachments=[{
+                               'name': 'file.txt'
+                           }])
 
     def test_markdown(self):
         send_email('markdown.md', {})

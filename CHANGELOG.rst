@@ -1,10 +1,11 @@
 Changelog
 =========
 
-0.9.4 (unreleased)
+0.10.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Move method of adding attachments out of the template
+  and require attachments to be passed as an argument to ``send_email()``. [Alex Bliskovsky]
 
 
 0.9.3 (2015-08-27)
