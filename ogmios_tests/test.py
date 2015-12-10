@@ -43,12 +43,32 @@ class SendEmailTest(TestCase):
 
             send_email('attachment.md',
                        context={},
-                       attachments=[{'path': fp.name}]
+                       attachments=[fp.name]
             )
 
         assert len(mail.outbox) == 1
         assert len(mail.outbox[0].attachments) == 1
         assert mail.outbox[0].attachments[0][1] == content
+
+    def test_send_renamed_attachment_without_mimetype(self):
+        content = 'Some content'
+
+        with NamedTemporaryFile() as fp:
+            # Encode to bytes for Python 3 compatibility.
+            fp.write(content.encode('utf-8'))
+            fp.flush()
+
+            send_email('attachment.md',
+                       context={},
+                       attachments=[{
+                           'path': fp.name,
+                           'name': 'file_test.txt',
+                       }])
+
+        assert len(mail.outbox) == 1
+        assert len(mail.outbox[0].attachments) == 1
+        assert mail.outbox[0].attachments[0][1] == content
+        assert mail.outbox[0].attachments[0][0] == 'file_test.txt'
 
     def test_rename_attachment(self):
         content = 'Some content'

@@ -108,14 +108,40 @@ class EmailSender(object):
 
     def validate_attachments(self):
         for attachment in self.attachments:
-            if set(attachment.keys()) == set(['path', 'name', 'type']):
+            if isinstance(attachment, six.string_types):
+                # Allow specifying an attachment with just
+                # a path to the filename
                 continue
-            elif set(attachment.keys()) == set(['path']):
+            elif set(attachment.keys()) == set(['path', 'name']):
+                # Allow the user to specify the path and the filename.
+                # Let Django infer the mimetype.
+                continue
+            elif set(attachment.keys()) == set(['path', 'name', 'type']):
+                # Allow specifying all properties of an attachment.
                 continue
             else:
-                raise OgmiosError("Attachments should be a list of dictionaries "
-                                  "with either a 'path' key, or 'path', 'name', and 'type' "
-                                  "keys.")
+                raise OgmiosError("Invalid attachment specification. "
+                                  "Please see the documentation for details.")
+
+    def handle_attachments(self, email):
+        for attachment in self.attachments:
+            if isinstance(attachment, six.string_types):
+                email.attach_file(attachment)
+            else:
+                # name and path are guaranteed to be in the dictionary
+                name = attachment['name']
+                fpath = attachment['path']
+                # type may not be
+                mimetype = attachment.get('type')
+
+                full_path = os.path.join(fpath)
+                with open(full_path, 'r') as file_:
+                    data = file_.read()
+                if mimetype:
+                    email.attach(name, data, mimetype)
+                else:
+                    email.attach(name, data)
+
 
     def get_headers(self):
         for key, value in self.data['headers'].items():
@@ -165,15 +191,7 @@ class EmailSender(object):
             email = EmailMultiAlternatives(**kwargs)
             email.attach_alternative(self.html, 'text/html')
 
-        for attachment in self.attachments:
-            if len(attachment.keys()) == 1:
-                email.attach_file(attachment['path'])
-            elif len(attachment.keys()) == 3:
-                name, fname, mime = attachment['name'], attachment['path'], attachment['type']
-                full_fname = os.path.join(fname)
-                with open(full_fname, 'r') as file_:
-                    data = file_.read()
-                email.attach(name, data, mime)
+        self.handle_attachments(email)
 
         email.send()
 
