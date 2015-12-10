@@ -112,31 +112,34 @@ class EmailSender(object):
                 # Allow specifying an attachment with just
                 # a path to the filename
                 continue
-            elif set(attachment.keys()) == set(['path', 'name']):
-                # Allow the user to specify the path and the filename.
-                # Let Django infer the mimetype.
-                continue
-            elif set(attachment.keys()) == set(['path', 'name', 'type']):
-                # Allow specifying all properties of an attachment.
-                continue
             else:
-                raise OgmiosError("Invalid attachment specification. "
-                                  "Please see the documentation for details.")
+                key_set = set(attachment.keys())
+                if len(key_set & set(['path', 'data'])) != 1:
+                    # Path or data are mutually exclusive.
+                    raise OgmiosError("You must specify either a path to an attachment "
+                                      "or give a file-like object with the data.")
+                if not 'name' in key_set:
+                    raise OgmiosError("You must specify the filename to send the attachment as.")
+
 
     def handle_attachments(self, email):
         for attachment in self.attachments:
             if isinstance(attachment, six.string_types):
                 email.attach_file(attachment)
             else:
-                # name and path are guaranteed to be in the dictionary
+                # name is required
                 name = attachment['name']
-                fpath = attachment['path']
-                # type may not be
+                # type may not be explicitly specified
                 mimetype = attachment.get('type')
 
-                full_path = os.path.join(fpath)
-                with open(full_path, 'r') as file_:
-                    data = file_.read()
+                if 'data' in attachment:
+                    data = attachment['data'].read()
+                else:
+                    fpath = attachment['path']
+                    full_path = os.path.join(fpath)
+                    with open(full_path, 'r') as file_:
+                        data = file_.read()
+
                 if mimetype:
                     email.attach(name, data, mimetype)
                 else:

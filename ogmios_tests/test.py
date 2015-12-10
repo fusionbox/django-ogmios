@@ -2,6 +2,7 @@ from tempfile import NamedTemporaryFile
 
 from django.core import mail
 from django.test import TestCase, override_settings
+from six import StringIO
 
 from ogmios import send_email, OgmiosError
 
@@ -90,6 +91,22 @@ class SendEmailTest(TestCase):
         assert len(mail.outbox[0].attachments) == 1
         assert mail.outbox[0].attachments[0][1] == content
         assert mail.outbox[0].attachments[0][0] == 'file.txt'
+
+    def test_filelike_object_attachment(self):
+        content = "This is some data"
+        content_file = StringIO(content)
+
+        send_email('attachment.md',
+                   context={},
+                   attachments=[{
+                       'data': content_file,
+                       'name': 'data.txt'
+                   }])
+
+        assert len(mail.outbox) == 1
+        assert len(mail.outbox[0].attachments) == 1
+        assert mail.outbox[0].attachments[0][1] == content
+        assert mail.outbox[0].attachments[0][0] == 'data.txt'
 
     def test_attachment_validation(self):
         content = 'Some content'
