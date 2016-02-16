@@ -6,3 +6,6 @@ __pycache__
 .eggs/
 
 /dist/
+/.coverage
+/htmlcov/
+/ogmios_tests/.cache/v/cache/lastfailed
