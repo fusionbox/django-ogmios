@@ -165,7 +165,7 @@ class EmailSender(object):
         elif self.data['content-type'] == TYPE_HTML:
             return self.render_string(self.content[1])
 
-    def send(self):
+    def build_message(self):
         to = self.get_recipients('to')
         if len(to) == 0:
             raise EmailTemplateError("You gotta give some recipients.")
@@ -192,8 +192,11 @@ class EmailSender(object):
             email.attach_alternative(self.html, 'text/html')
 
         self.handle_attachments(email)
+        return email
 
-        email.send()
+    def send(self):
+        message = self.build_message()
+        return message.send()
 
 
 def send_email(template, context, sender_class=EmailSender, attachments=None):
