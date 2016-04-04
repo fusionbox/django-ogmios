@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 from django.core import mail
 from django.test import TestCase, override_settings
 
-from ogmios import send_email, OgmiosError
+from ogmios import send_email, OgmiosError, EmailSender
 
 CACHED_TEMPLATE_LOADER_SETTINGS = [
     {
@@ -150,3 +150,10 @@ class SendEmailTest(TestCase):
         assert message.is_multipart()
         content_types = {m.get_content_type() for m in message.get_payload()}
         assert content_types == {'text/plain', 'text/html'}
+
+
+class EmailSenderTest(TestCase):
+    def test_build_message(self):
+        to = 'user@example.com'
+        message = EmailSender('to.md', {'to': to}).build_message()
+        assert message.to == [to]
