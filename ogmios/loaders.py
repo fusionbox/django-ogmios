@@ -1,17 +1,11 @@
 """
-Compatibility layer for Django 1.7 and 1.8.
-
-Django 1.8 introduced support for multiple templating engines, and
-Ogmios needs to check each of the engines for the desired template.
-
-In Django 1.7 Ogmios needs to check the loaders for the only engine
-Django supports.
+Module for finding templates from configured loaders.
 """
 
 from distutils.version import StrictVersion
 
 import django
-from django.template import Template, Context, TemplateDoesNotExist
+from django.template import Template, Context, TemplateDoesNotExist, engines
 
 def get_template_source_from_loader(template_loader, instance):
     """
@@ -49,7 +43,7 @@ def get_template_source_from_engine(engine, instance):
 
     raise TemplateDoesNotExist(instance.filename)
 
-def get_template_source_from_engine_module(engines, instance):
+def get_template_source(instance):
     """
     Check all configured engines for a specific template.
     """
@@ -67,28 +61,3 @@ def get_template_source_from_engine_module(engines, instance):
             pass
 
     raise TemplateDoesNotExist(instance.filename)
-
-def get_template_source_from_loader_module(loader_module, instance):
-    try:
-        loader_module.find_template('') # Just to preload template_source_loader_module
-    except TemplateDoesNotExist:
-        pass
-
-    for loader in loader_module.template_source_loaders:
-        try:
-            return get_template_source_from_loader(loader, instance)
-        except TemplateDoesNotExist:
-            pass
-
-    raise TemplateDoesNotExist(instance.filename)
-
-try:
-    # Engines was introduced in Django 1.8
-    from django.template import engines
-    def get_template_source(instance):
-        return get_template_source_from_engine_module(engines, instance)
-except ImportError:
-    # We have Django 1.7
-    from django.template import loader as loader_module
-    def get_template_source(instance):
-        return get_template_source_from_loader_module(loader_module, instance)
