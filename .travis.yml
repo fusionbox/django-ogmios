@@ -13,10 +13,8 @@ script:
   - pip install tox
 
 env:
-  - TOX_ENV=py34-dj17
   - TOX_ENV=py34-dj18
   - TOX_ENV=py34-dj19
-  - TOX_ENV=py27-dj17
   - TOX_ENV=py27-dj18
   - TOX_ENV=py27-dj19
 
