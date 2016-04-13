@@ -17,14 +17,13 @@ def get_template_source_from_loader(template_loader, instance):
     """
     Return the source for a file from the template loader.
     """
-    # Check for the cached template loader
-    if hasattr(template_loader, 'get_template_sources'):
-        # The cached template loader has a fake `load_template_source`
-        # but not a `get_template_sources`
+    try:
+        # This should work for templates that are not the cached template loader
         return template_loader.load_template_source(instance.filename)[0]
-    else:
-        # This might be the cached template loader, in which case we need to
-        # load the source from the loaders it's wrapping.
+    except NotImplementedError:
+        # This might be the cached template loader. Its load_template_source()
+        # method is not implemented
+
         for temp in template_loader.loaders:
             try:
                 return temp.load_template_source(instance.filename)[0]
