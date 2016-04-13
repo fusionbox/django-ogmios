@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.10.0 (unreleased)
-------------------
+0.10.0 (2016-04-13)
+-------------------
 
 - Add support for Django 1.9
 - Drop support for Django 1.7
