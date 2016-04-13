@@ -4,23 +4,25 @@ Changelog
 0.10.0 (unreleased)
 ------------------
 
+- Add support for Django 1.9
+- Drop support for Django 1.7
 - Move method of adding attachments out of the template
-  and require attachments to be passed as an argument to ``send_email()``. [Alex Bliskovsky]
+  and require attachments to be passed as an argument to ``send_email()``.
 
 
 0.9.3 (2015-08-27)
 ------------------
 
-- Add Django 1.7 compatibility. [Alex Bliskovsky]
+- Add Django 1.7 compatibility.
 
 
 0.9.2 (2015-07-16)
 ------------------
 
-- Fix ``setup.py`` dependencies. [Alex Bliskovsky]
-- Fix tests. [Alex Bliskovsky]
-- Fix compatibility with django's cached loader. [Alex Bliskovsky]
-- Fix context processing. [Alex Bliskovsky]
+- Fix ``setup.py`` dependencies.
+- Fix tests.
+- Fix compatibility with django's cached loader.
+- Fix context processing.
 
 
 0.9.1 (2015-06-22)
