@@ -5,8 +5,8 @@ Changelog
 ------------------
 
 - Move method of adding attachments out of the template
-  and require attachments to be passed as an argument to ``send_email()``. [Alex Bliskovsky]
-
+  and require attachments to be passed as an argument to ``send_email()``.
+- Allow attachments to be specified as file-like objects.
 
 0.9.3 (2015-08-27)
 ------------------
