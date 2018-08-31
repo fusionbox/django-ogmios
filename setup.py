@@ -44,7 +44,7 @@ setup(name='django-ogmios',
           'Topic :: Software Development :: Libraries'
       ],
       install_requires=[
-          'Django>=1.8',
+          'Django>=2.0',
           'PyYAML',
           'Markdown',
           'html2text',

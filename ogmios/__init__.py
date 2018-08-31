@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import collections
 import os
 
 import yaml
@@ -10,10 +9,10 @@ import six
 
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.template import Template, Context, TemplateDoesNotExist
+from django.template import Template, Context
 from django.utils.functional import cached_property
+from django.template.loader import get_template
 
-from .loaders import get_template_source
 
 VALID_KEYS = set(['to', 'cc', 'bcc', 'subject', 'attachments',
                   'from', 'headers', 'content-type'])
@@ -54,10 +53,9 @@ class EmailTemplateError(OgmiosError):
 
 class EmailSender(object):
 
-    def __init__(self, filename, context, template_loader=None, attachments=None):
+    def __init__(self, filename, context, attachments=None):
         self.filename = filename
         self.context = context
-        self.template_loader = template_loader
         self.attachments = attachments or []
 
     def get_from(self):
@@ -68,15 +66,11 @@ class EmailSender(object):
         return Template(string).render(Context(self.context))
 
     def get_template_source(self):
-        return loaders.get_template_source(self)
+        return get_template(self.filename).template.source
 
     @cached_property
     def content(self):
         source = self.get_template_source()
-
-        if source is None:
-            raise TemplateDoesNotExist(self.filename)
-
         return source.split('\n---\n')
 
     @cached_property
@@ -141,7 +135,6 @@ class EmailSender(object):
                     email.attach(name, data, mimetype)
                 else:
                     email.attach(name, data)
-
 
     def get_headers(self):
         for key, value in self.data['headers'].items():
