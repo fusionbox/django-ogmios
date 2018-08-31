@@ -75,7 +75,7 @@ class EmailSender(object):
 
     @cached_property
     def data(self):
-        data = yaml.safe_load(self.content[0], Loader=TemplateYAMLLoader)
+        data = yaml.load(self.content[0], Loader=TemplateYAMLLoader)
 
         if not (set(data.keys()) <= VALID_KEYS):
             invalid_keys = set(data.keys()) - VALID_KEYS
