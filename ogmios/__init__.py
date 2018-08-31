@@ -13,6 +13,8 @@ from django.template import Template, Context
 from django.utils.functional import cached_property
 from django.template.loader import get_template
 
+from .loaders import get_template_source
+
 
 VALID_KEYS = set(['to', 'cc', 'bcc', 'subject', 'attachments',
                   'from', 'headers', 'content-type'])
@@ -66,7 +68,7 @@ class EmailSender(object):
         return Template(string).render(Context(self.context))
 
     def get_template_source(self):
-        return get_template(self.filename).template.source
+        return get_template_source(self.filename)
 
     @cached_property
     def content(self):
