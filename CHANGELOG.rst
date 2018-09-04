@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.11.0 (unreleased)
+0.11.0 (2018-09-04)
 -------------------
 
 - Add support for Django > 1.11 and remove support for all prior versions.
