@@ -11,7 +11,6 @@ from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template import Template, Context
 from django.utils.functional import cached_property
-from django.template.loader import get_template
 
 from .loaders import get_template_source
 
