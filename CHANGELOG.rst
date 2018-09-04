@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.10.1 (unreleased)
+0.11.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add support for Django > 1.11 and remove support for all prior versions.
 
 
 0.10.0 (2016-04-13)
