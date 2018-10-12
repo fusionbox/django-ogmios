@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.11.1 (unreleased)
+0.11.1 (2018-10-12)
 -------------------
 
-- Nothing changed yet.
+- Fix email parsing [#15]
 
 
 0.11.0 (2018-09-04)
