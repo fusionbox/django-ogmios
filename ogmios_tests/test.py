@@ -151,6 +151,12 @@ class SendEmailTest(TestCase):
         content_types = {m.get_content_type() for m in message.get_payload()}
         assert content_types == {'text/plain', 'text/html'}
 
+    def test_comma(self):
+        send_email('comma.md', {})
+        assert mail.outbox[0].to == [
+            '"Foo," <foo@example.com>',
+        ]
+
 
 class EmailSenderTest(TestCase):
     def test_build_message(self):

@@ -6,6 +6,7 @@ import yaml
 import markdown
 import html2text
 import six
+import email.utils
 
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
@@ -92,11 +93,12 @@ class EmailSender(object):
         """
         For example get_recipients('to')
         """
-        return [
-            dest.strip()
-            for dest in self.render_string(self.data[name]).split(',')
-            if dest.strip()  # Ignore multiple comas like: "email1, , email2"
+        to_str = self.render_string(self.data[name])
+        formatted_emails = [
+            email.utils.formataddr(addr_pair)
+            for addr_pair in email.utils.getaddresses([to_str])
         ]
+        return [i for i in formatted_emails if i]
 
     def get_subject(self):
         return self.render_string(self.data['subject'])
