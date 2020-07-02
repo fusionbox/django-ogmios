@@ -3,7 +3,7 @@ Django-Ogmios
 =============
 .. image:: https://travis-ci.org/fusionbox/django-ogmios.svg?branch=master
     :target: https://travis-ci.org/fusionbox/django-ogmios
-    :alt Build Status
+    :alt: Build Status
 
 Just sends emails. Simple, easy, multiformat.
 
