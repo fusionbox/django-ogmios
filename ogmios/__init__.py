@@ -176,7 +176,7 @@ class EmailSender(object):
         )
         if 'cc' in self.data:
             kwargs.update(cc=self.get_recipients('cc'))
-        if 'bbc' in self.data:
+        if 'bcc' in self.data:
             kwargs.update(bcc=self.get_recipients('bcc'))
         if 'headers' in self.data:
             kwargs.update(headers=dict(self.get_headers()))

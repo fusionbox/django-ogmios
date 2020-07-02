@@ -4,7 +4,7 @@ Changelog
 0.11.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Make bcc work
 
 
 0.11.1 (2018-10-12)
