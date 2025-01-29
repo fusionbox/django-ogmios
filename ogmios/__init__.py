@@ -96,7 +96,7 @@ class EmailSender(object):
         to_str = self.render_string(self.data[name])
         formatted_emails = [
             email.utils.formataddr(addr_pair)
-            for addr_pair in email.utils.getaddresses([to_str])
+            for addr_pair in email.utils.getaddresses([to_str], strict=False)
         ]
         return [i for i in formatted_emails if i]
 
