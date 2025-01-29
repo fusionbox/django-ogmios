@@ -1,11 +1,10 @@
 Changelog
 =========
 
-0.11.3 (unreleased)
+0.12.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Use old non-strict behavior of getaddresses. Requires latest patch version of Python >= 3.8
 
 0.11.2 (2020-07-02)
 -------------------
